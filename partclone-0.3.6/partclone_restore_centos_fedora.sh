@@ -155,12 +155,12 @@ echo "y
 " | mkfs -t ext4 /dev/sdc1
 
 # restore sda sdb sdc partition use of partclone.extfs command
-partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_boot_sda1.img -o /dev/sda1
-partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_root_sda2.img -o /dev/sda2
-partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_opt_sata_sdb1.img -o /dev/sdb1
-partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_opt_ssd_sdc1.img -o /dev/sdc1
-partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/fedora_boot_sda5.img -o /dev/sda5
-partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/fedora_root_sda6.img -o /dev/sda6
+partclone.extfs -r -s /run/initramfs/live/mnt/image_directory/centos_boot_sda1.img -o /dev/sda1
+partclone.extfs -r -s /run/initramfs/live/mnt/image_directory/centos_root_sda2.img -o /dev/sda2
+partclone.extfs -r -s /run/initramfs/live/mnt/image_directory/centos_opt_sata_sdb1.img -o /dev/sdb1
+partclone.extfs -r -s /run/initramfs/live/mnt/image_directory/centos_opt_ssd_sdc1.img -o /dev/sdc1
+partclone.extfs -r -s /run/initramfs/live/mnt/image_directory/fedora_boot_sda5.img -o /dev/sda5
+partclone.extfs -r -s /run/initramfs/live/mnt/image_directory/fedora_root_sda6.img -o /dev/sda6
 
 
 
@@ -184,8 +184,8 @@ umount /mnt
 mount /dev/sda6 /mnt
 mount /dev/sda5 /mnt/boot
 echo "Copying the centos image file to the fedora root partition.......Please wait a while for 5 minutes..."
-/bin/cp -f /run/media/liveuser/Fedora-23/mnt/image_directory/centos_boot_sda1.img /mnt/mnt/image_directory/
-/bin/cp -f /run/media/liveuser/Fedora-23/mnt/image_directory/centos_root_sda2.img /mnt/mnt/image_directory/
+/bin/cp -f /run/initramfs/live/mnt/image_directory/centos_boot_sda1.img /mnt/mnt/image_directory/
+/bin/cp -f /run/initramfs/live/mnt/image_directory/centos_root_sda2.img /mnt/mnt/image_directory/
 umount /mnt/boot
 umount /mnt
 echo "Partclone finshed! Please Reboot!"
