@@ -65,6 +65,10 @@ p
 3
 44038144
 48234495
+t
+3
+L
+82
 w
 " | fdisk /dev/sda
 
@@ -94,6 +98,10 @@ w
 echo "n
 80322560
 83886079
+t
+7
+L
+82
 w
 " | fdisk /dev/sda
 
@@ -157,17 +165,18 @@ partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/fedora_r
 
 
 
-# comment swap UUID within etc/fstab because of reboot problem
+# comment swap UUID but /dev/sdaX table within etc/fstab because of reboot problem
 mount /dev/sda2 /mnt
 mount /dev/sda1 /mnt/boot
 sed -i "s/UUID=.* swap/#UUID=.* swap/g" /mnt/etc/fstab
+echo "/dev/sda3 swap swap defaults 0 0" >> /mnt/etc/fstab
 umount /mnt/boot
 umount /mnt
 
 mount /dev/sda6 /mnt
 mount /dev/sda5 /mnt/boot
 sed -i "s/UUID=.* swap/#UUID=.* swap/g" /mnt/etc/fstab
+echo "/dev/sda7 swap swap defaults 0 0" >> /mnt/etc/fstab
 umount /mnt/boot
 umount /mnt
-
 
