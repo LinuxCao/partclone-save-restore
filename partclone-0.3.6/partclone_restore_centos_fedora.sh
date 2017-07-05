@@ -180,3 +180,15 @@ echo "/dev/sda7 swap swap defaults 0 0" >> /mnt/etc/fstab
 umount /mnt/boot
 umount /mnt
 
+# Copy the centos image file to the fedora root partition
+mount /dev/sda6 /mnt
+mount /dev/sda5 /mnt/boot
+echo "Copying the centos image file to the fedora root partition.......Please wait a while for 5 minutes..."
+/bin/cp -f /run/media/liveuser/Fedora-23/mnt/image_directory/centos_boot_sda1.img /mnt/mnt/image_directory/
+/bin/cp -f /run/media/liveuser/Fedora-23/mnt/image_directory/centos_root_sda2.img /mnt/mnt/image_directory/
+umount /mnt/boot
+umount /mnt
+echo "Partclone finshed! Please Reboot!"
+
+
+
