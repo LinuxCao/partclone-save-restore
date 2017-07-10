@@ -18,4 +18,5 @@ echo "/dev/sda3 swap swap defaults 0 0" >> /mnt/etc/fstab
 umount /mnt/boot
 umount /mnt
 
+reboot
 exit
