@@ -1,0 +1,3 @@
+#! /bin/bash
+sudo partclone_restore_centos_fedora.sh  | zenity --progress --pulsate --auto-close --auto-kill --text="Restoring server system..."
+exit

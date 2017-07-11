@@ -1,0 +1,15 @@
+[Desktop Entry]
+Comment[zh_CN]=服务器克隆还原app
+Comment=Use partclone to restore server system
+Exec=/usr/bin/partclone
+GenericName[zh_CN]=克隆还原开发工具
+GenericName=Clone restore development tools
+Name[zh_CN]=克隆还原开发工具
+Name=Clone restore development tools
+StartupNotify=false
+Terminal=false
+Type=Application
+Categories=SDK;
+X-KDE-SubstituteUID=false
+Icon=/opt/partclone-0.3.6/partclone.ico
+InitialPreference=3
