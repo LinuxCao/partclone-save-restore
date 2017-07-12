@@ -27,6 +27,17 @@ w
 " | fdisk /dev/sda
 
 
+# delete sdb 
+echo "d
+
+w
+" | fdisk /dev/sdb
+
+# delete sdc
+echo "d
+
+w
+" | fdisk /dev/sdc
 
 
 # add new sda partition 
@@ -45,7 +56,7 @@ echo "n
 p
 2
 1026048
-21997567
+44038143
 w
 " | fdisk /dev/sda
 
@@ -53,8 +64,8 @@ w
 echo "n
 p
 3
-21997568
-26191871
+44038144
+48232447
 t
 3
 82
@@ -64,34 +75,52 @@ w
 # add Extended Partition sda4
 echo "n
 e
-26191872
-61865983
+48232448
+83886079
 w
 " | fdisk /dev/sda
 
 # add fedora_boot_partition sda5
 echo "n
-26195968
-27219967
+48234496
+49258495
 w
 " | fdisk /dev/sda
 
 # add fedora_root_partition sda6
 echo "n
-27222016
-58298367
+49260544
+80318463
 w
 " | fdisk /dev/sda
 
 # add fedora_swap_partition sda7
 echo "n
-58300416
-61865983
+80320512
+83886079
 t
 7
 82
 w
 " | fdisk /dev/sda
+
+# add /opt/sata partition sdb1
+echo "n
+p
+1
+2048
+
+w
+" | fdisk /dev/sdb
+
+# add /opt/ssd partition sdc1
+echo "n
+p
+1
+2048
+
+w
+" | fdisk /dev/sdc
 
 
 # specifies the flag for the boot partition default = /dev/sda5
@@ -105,6 +134,11 @@ w
 echo "p
 " | fdisk /dev/sda
 
+echo "p
+" | fdisk /dev/sdb
+
+echo "p
+" | fdisk /dev/sdc
 
 # format sda partititon
 # format centos_boot_partition sda1
@@ -131,14 +165,21 @@ echo "y
 swapoff /dev/sda7
 mkswap /dev/sda7
 
+# format centos_opt_sata_partition sdb1
+echo "y
+" | mkfs -t ext4 /dev/sdb1
 
+# format centos_opt_ssd_partition sdc1
+echo "y
+" | mkfs -t ext4 /dev/sdc1
 
 # restore sda sdb sdc partition use of partclone.extfs command
 partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_boot_sda1.img -o /dev/sda1
 partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_root_sda2.img -o /dev/sda2
 partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/fedora_boot_sda5.img -o /dev/sda5
 partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/fedora_root_sda6.img -o /dev/sda6
-
+partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_opt_sata_sdb1.img -o /dev/sdb1
+partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_opt_ssd_sdc1.img -o /dev/sdc1
 
 # comment swap UUID but /dev/sdaX table within etc/fstab because of reboot problem
 mount /dev/sda2 /mnt
