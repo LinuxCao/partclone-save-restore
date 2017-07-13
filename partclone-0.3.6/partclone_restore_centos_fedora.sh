@@ -178,21 +178,23 @@ partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_b
 partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_root_sda2.img -o /dev/sda2
 partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/fedora_boot_sda5.img -o /dev/sda5
 partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/fedora_root_sda6.img -o /dev/sda6
-partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_opt_sata_sdb1.img -o /dev/sdb1
-partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_opt_ssd_sdc1.img -o /dev/sdc1
+#partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_opt_sata_sdb1.img -o /dev/sdb1
+#partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_opt_ssd_sdc1.img -o /dev/sdc1
 
 # comment swap UUID but /dev/sdaX table within etc/fstab because of reboot problem
 mount /dev/sda2 /mnt
 mount /dev/sda1 /mnt/boot
-sed -i "s/UUID=.* swap/#UUID=.* swap/g" /mnt/etc/fstab
-echo "/dev/sda3 swap swap defaults 0 0" >> /mnt/etc/fstab
+#sed -i "s/UUID=.* swap/#UUID=.* swap/g" /mnt/etc/fstab
+#echo "/dev/sda3 swap swap defaults 0 0" >> /mnt/etc/fstab
+cp -f /opt/partclone-0.3.6/centos_etc_fstab /mnt/etc/fstab
 umount /mnt/boot
 umount /mnt
 
 mount /dev/sda6 /mnt
 mount /dev/sda5 /mnt/boot
-sed -i "s/UUID=.* swap/#UUID=.* swap/g" /mnt/etc/fstab
-echo "/dev/sda7 swap swap defaults 0 0" >> /mnt/etc/fstab
+#sed -i "s/UUID=.* swap/#UUID=.* swap/g" /mnt/etc/fstab
+#echo "/dev/sda7 swap swap defaults 0 0" >> /mnt/etc/fstab
+cp -f /opt/partclone-0.3.6/fedora_etc_fstab /mnt/etc/fstab
 umount /mnt/boot
 umount /mnt
 
