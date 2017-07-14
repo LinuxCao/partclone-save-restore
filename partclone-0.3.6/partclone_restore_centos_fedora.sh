@@ -236,6 +236,9 @@ echo "p
 echo "p
 " | fdisk /dev/$SDC
 
+
+sudo partprobe
+
 # format sda partititon
 # format centos_boot_partition sda1
 echo "y
@@ -268,7 +271,6 @@ echo "y
 # format centos_opt_ssd_partition sdc1
 echo "y
 " | mkfs -t ext4 /dev/$SDC1
-
 
 
 # restore sda sdb sdc partition use of partclone.extfs command
