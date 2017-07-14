@@ -269,6 +269,8 @@ echo "y
 echo "y
 " | mkfs -t ext4 /dev/$SDC1
 
+
+
 # restore sda sdb sdc partition use of partclone.extfs command
 partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_boot_sda1.img -o /dev/$SDA1
 partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_root_sda2.img -o /dev/$SDA2
@@ -277,6 +279,25 @@ partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/fedora_r
 #partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_opt_sata_sdb1.img -o /dev/$SDB1
 #partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_opt_ssd_sdc1.img -o /dev/$SDC1
 
+# get all partition UUID
+SDA1_UUID=`blkid  /dev/$SDA1 | grep -m1 UUID | awk '{print $2}' | sed 's/\"//g'`
+SDA2_UUID=`blkid  /dev/$SDA2 | grep -m1 UUID | awk '{print $2}' | sed 's/\"//g'`
+SDA3_UUID=`blkid  /dev/$SDA3 | grep -m1 UUID | awk '{print $2}' | sed 's/\"//g'`
+SDB1_UUID=`blkid  /dev/$SDB1 | grep -m1 UUID | awk '{print $2}' | sed 's/\"//g'`
+SDC1_UUID=`blkid  /dev/$SDC1 | grep -m1 UUID | awk '{print $2}' | sed 's/\"//g'`
+SDA5_UUID=`blkid  /dev/$SDA5 | grep -m1 UUID | awk '{print $2}' | sed 's/\"//g'`
+SDA6_UUID=`blkid  /dev/$SDA6 | grep -m1 UUID | awk '{print $2}' | sed 's/\"//g'`
+SDA7_UUID=`blkid  /dev/$SDA7 | grep -m1 UUID | awk '{print $2}' | sed 's/\"//g'`
+
+echo "/dev/$SDA1: ""SDA1_UUID="$SDA1_UUID
+echo "/dev/$SDA2: ""SDA2_UUID="$SDA2_UUID
+echo "/dev/$SDA3: ""SDA3_UUID="$SDA3_UUID
+echo "/dev/$SDB1: ""SDB1_UUID="$SDB1_UUID
+echo "/dev/$SDC1: ""SDC1_UUID="$SDC1_UUID
+echo "/dev/$SDA5: ""SDC1_UUID="$SDA5_UUID
+echo "/dev/$SDA6: ""SDC1_UUID="$SDA6_UUID
+echo "/dev/$SDA7: ""SDC1_UUID="$SDA7_UUID
+
 # comment swap UUID but /dev/sdaX table within etc/fstab because of reboot problem
 mount /dev/$SDA2 /mnt
 mount /dev/$SDA1 /mnt/boot
@@ -284,11 +305,11 @@ mount /dev/$SDA1 /mnt/boot
 #echo "/dev/sda3 swap swap defaults 0 0" >> /mnt/etc/fstab
 cp -f /opt/partclone-0.3.6/centos_etc_fstab /mnt/etc/fstab
 
-echo "/dev/$SDA2	/ 	ext4 	defaults 	1 1" >> /mnt/etc/fstab
-echo "/dev/$SDA1 	/boot 	ext4 	defaults 	1 2" >> /mnt/etc/fstab
-echo "/dev/$SDB1 	/opt/sata 	ext4 	defaults 	1 2" >> /mnt/etc/fstab
-echo "/dev/$SDC1 	/opt/ssd 	ext4 	defaults 	1 2" >> /mnt/etc/fstab
-echo "/dev/$SDA3 	swap 	swap 	defaults 	0 0" >> /mnt/etc/fstab
+echo "$SDA2_UUID	/ 	ext4 	defaults 	1 1" >> /mnt/etc/fstab
+echo "$SDA1_UUID 	/boot 	ext4 	defaults 	1 2" >> /mnt/etc/fstab
+echo "$SDB1_UUID 	/opt/sata 	ext4 	defaults 	1 2" >> /mnt/etc/fstab
+echo "$SDC1_UUID 	/opt/ssd 	ext4 	defaults 	1 2" >> /mnt/etc/fstab
+echo "$SDA3_UUID 	swap 	swap 	defaults 	0 0" >> /mnt/etc/fstab
 
 umount /mnt/boot
 umount /mnt
@@ -299,9 +320,9 @@ mount /dev/$SDA5 /mnt/boot
 #echo "/dev/sda7 swap swap defaults 0 0" >> /mnt/etc/fstab
 cp -f /opt/partclone-0.3.6/fedora_etc_fstab /mnt/etc/fstab
 
-echo "/dev/$SDA6	/ 	ext4 	defaults 	1 1" >> /mnt/etc/fstab
-echo "/dev/$SDA5 	/boot 	ext4 	defaults 	1 2" >> /mnt/etc/fstab
-echo "/dev/$SDA7 	swap 	swap 	defaults 	0 0" >> /mnt/etc/fstab
+echo "$SDA6_UUID	/ 	ext4 	defaults 	1 1" >> /mnt/etc/fstab
+echo "$SDA5_UUID 	/boot 	ext4 	defaults 	1 2" >> /mnt/etc/fstab
+echo "$SDA7_UUID 	swap 	swap 	defaults 	0 0" >> /mnt/etc/fstab
 
 umount /mnt/boot
 umount /mnt
@@ -322,6 +343,5 @@ mount /dev/$SDA5 /mnt/boot
 grub2-install --root-directory=/mnt /dev/$SDA
 umount /mnt/boot
 umount /mnt
-
 
 echo "Partclone finshed! Please Reboot!"
