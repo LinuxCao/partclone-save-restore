@@ -15,6 +15,7 @@ SDC1='sdc1'
 
 check_sda_sdb_sdc()
 {
+echo "check_sda_sdb_sdc"
 #检测sda sdb sdc三个磁盘哪个是40 GiB
 echo "Detection sda sdb sdc three disk which is 40 GiB"
 # Detection sda
@@ -42,12 +43,12 @@ fi
 fdisk -l /dev/sdb | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdb.info
 if [ -z $(cat /tmp/sdb.info) ]
 then
-        echo "/tmp/sdb.info have nothing"
+    echo "/tmp/sdb.info have nothing"
 else
-        echo "sdb is 40GiB"
-        SDA='sdb'
-        SDB='sda'
-        SDC='sdc'
+	echo "sdb is 40GiB"
+	SDA='sdb'
+	SDB='sda'
+	SDC='sdc'
 	SDA1='sdb1'
 	SDA2='sdb2'
 	SDA3='sdb3'
@@ -62,14 +63,14 @@ fi
 
 # Detection sdc
 fdisk -l /dev/sdc | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdc.info
-if [ -z $(cat /tmp/sdc.info) ]
+if [[ -z $(cat /tmp/sdc.info) ]]
 then
-        echo "/tmp/sdc.info have nothing"
+    echo "/tmp/sdc.info have nothing"
 else
-        echo "sdc is 40GiB"
-        SDA='sdc'
-        SDB='sdb'
-        SDC='sda'
+	echo "sdc is 40GiB"
+	SDA='sdc'
+	SDB='sdb'
+	SDC='sda'
 	SDA1='sdc1'
 	SDA2='sdc2'
 	SDA3='sdc3'
@@ -81,8 +82,6 @@ else
 	SDC1='sda1'
 
 fi
-}
-check_sda_sdb_sdc
 echo "SDA ="$SDA
 echo "SDB ="$SDB
 echo "SDC ="$SDC
@@ -95,6 +94,296 @@ echo "SDA6 ="$SDA6
 echo "SDA7 ="$SDA7
 echo "SDB1 ="$SDB1
 echo "SDC1 ="$SDC1
+}
+
+check_sdb_sdc_sdd()
+{
+echo "check_sdb_sdc_sdd"
+#检测sdb sdc sdd三个磁盘哪个是40 GiB
+echo "Detection sdb sdc sdd three disk which is 40 GiB"
+# Detection sdb
+fdisk -l /dev/sdb | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdb.info
+if [ -z $(cat /tmp/sdb.info) ]
+then 
+	echo "/tmp/sdb.info have nothing"
+else  
+	echo "sdb is 40GiB" 
+	SDA='sdb'
+	SDB='sdc'
+	SDC='sdd'
+	SDA1='sdb1'
+	SDA2='sdb2'
+	SDA3='sdb3'
+	SDA4='sdb4'
+	SDA5='sdb5'
+	SDA6='sdb6'
+	SDA7='sdb7'
+	SDB1='sdc1'
+	SDC1='sdd1'
+fi	
+
+# Detection sdc
+fdisk -l /dev/sdc | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdc.info
+if [ -z $(cat /tmp/sdc.info) ]
+then
+	echo "/tmp/sdc.info have nothing"
+else
+	echo "sdc is 40GiB"
+	SDA='sdc'
+	SDB='sdb'
+	SDC='sdd'
+	SDA1='sdc1'
+	SDA2='sdc2'
+	SDA3='sdc3'
+	SDA4='sdc4'
+	SDA5='sdc5'
+	SDA6='sdc6'
+	SDA7='sdc7'
+	SDB1='sdb1'
+	SDC1='sdd1'
+
+fi
+
+# Detection sdd
+fdisk -l /dev/sdd | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdd.info
+if [ -z $(cat /tmp/sdd.info) ]
+then
+    echo "/tmp/sdd.info have nothing"
+else
+	echo "sdd is 40GiB"
+	SDA='sdd'
+	SDB='sdb'
+	SDC='sdc'
+	SDA1='sdd1'
+	SDA2='sdd2'
+	SDA3='sdd3'
+	SDA4='sdd4'
+	SDA5='sdd5'
+	SDA6='sdd6'
+	SDA7='sdd7'
+	SDB1='sdb1'
+	SDC1='sdc1'
+
+fi
+echo "SDA ="$SDA
+echo "SDB ="$SDB
+echo "SDC ="$SDC
+echo "SDA1 ="$SDA1
+echo "SDA2 ="$SDA2
+echo "SDA3 ="$SDA3
+echo "SDA4 ="$SDA4
+echo "SDA5 ="$SDA5
+echo "SDA6 ="$SDA6
+echo "SDA7 ="$SDA7
+echo "SDB1 ="$SDB1
+echo "SDC1 ="$SDC1
+}
+
+
+check_sda_sdc_sdd()
+{
+echo "check_sda_sdc_sdd"
+#检测sda sdc sdd三个磁盘哪个是40 GiB
+echo "Detection sda sdc sdd three disk which is 40 GiB"
+# Detection sda
+fdisk -l /dev/sda | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sda.info
+if [ -z $(cat /tmp/sda.info) ]
+then 
+	echo "/tmp/sda.info have nothing"
+else  
+	echo "sda is 40GiB" 
+	SDA='sda'
+	SDB='sdd'
+	SDC='sdc'
+	SDA1='sda1'
+	SDA2='sda2'
+	SDA3='sda3'
+	SDA4='sda4'
+	SDA5='sda5'
+	SDA6='sda6'
+	SDA7='sda7'
+	SDB1='sdd1'
+	SDC1='sdc1'
+fi	
+
+# Detection sdc
+fdisk -l /dev/sdc | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdc.info
+if [ -z $(cat /tmp/sdc.info) ]
+then
+	echo "/tmp/sdc.info have nothing"
+else
+	echo "sdc is 40GiB"
+	SDA='sdc'
+	SDB='sdd'
+	SDC='sda'
+	SDA1='sdc1'
+	SDA2='sdc2'
+	SDA3='sdc3'
+	SDA4='sdc4'
+	SDA5='sdc5'
+	SDA6='sdc6'
+	SDA7='sdc7'
+	SDB1='sdd1'
+	SDC1='sda1'
+
+fi
+
+# Detection sdd
+fdisk -l /dev/sdd | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdd.info
+if [ -z $(cat /tmp/sdd.info) ]
+then
+    echo "/tmp/sdd.info have nothing"
+else
+	echo "sdd is 40GiB"
+	SDA='sdd'
+	SDB='sda'
+	SDC='sdc'
+	SDA1='sdd1'
+	SDA2='sdd2'
+	SDA3='sdd3'
+	SDA4='sdd4'
+	SDA5='sdd5'
+	SDA6='sdd6'
+	SDA7='sdd7'
+	SDB1='sda1'
+	SDC1='sdc1'
+
+fi
+
+echo "SDA ="$SDA
+echo "SDB ="$SDB
+echo "SDC ="$SDC
+echo "SDA1 ="$SDA1
+echo "SDA2 ="$SDA2
+echo "SDA3 ="$SDA3
+echo "SDA4 ="$SDA4
+echo "SDA5 ="$SDA5
+echo "SDA6 ="$SDA6
+echo "SDA7 ="$SDA7
+echo "SDB1 ="$SDB1
+echo "SDC1 ="$SDC1
+}
+
+
+check_sda_sdb_sdd()
+{
+echo "check_sda_sdc_sdd"
+#检测sda sdb sdd三个磁盘哪个是40 GiB
+echo "Detection sda sdb sdd three disk which is 40 GiB"
+# Detection sda
+fdisk -l /dev/sda | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sda.info
+if [ -z $(cat /tmp/sda.info) ]
+then 
+	echo "/tmp/sda.info have nothing"
+else  
+	echo "sda is 40GiB" 
+	SDA='sda'
+	SDB='sdb'
+	SDC='sdd'
+	SDA1='sda1'
+	SDA2='sda2'
+	SDA3='sda3'
+	SDA4='sda4'
+	SDA5='sda5'
+	SDA6='sda6'
+	SDA7='sda7'
+	SDB1='sdb1'
+	SDC1='sdd1'
+fi	
+
+# Detection sdb
+fdisk -l /dev/sdb | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdb.info
+if [ -z $(cat /tmp/sdb.info) ]
+then
+	echo "/tmp/sdb.info have nothing"
+else
+	echo "sdb is 40GiB"
+	SDA='sdb'
+	SDB='sdd'
+	SDC='sda'
+	SDA1='sdb1'
+	SDA2='sdb2'
+	SDA3='sdb3'
+	SDA4='sdb4'
+	SDA5='sdb5'
+	SDA6='sdb6'
+	SDA7='sdb7'
+	SDB1='sdd1'
+	SDC1='sda1'
+
+fi
+
+# Detection sdd
+fdisk -l /dev/sdd | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdd.info
+if [ -z $(cat /tmp/sdd.info) ]
+then
+    echo "/tmp/sdd.info have nothing"
+else
+	echo "sdd is 40GiB"
+	SDA='sdd'
+	SDB='sdb'
+	SDC='sda'
+	SDA1='sdd1'
+	SDA2='sdd2'
+	SDA3='sdd3'
+	SDA4='sdd4'
+	SDA5='sdd5'
+	SDA6='sdd6'
+	SDA7='sdd7'
+	SDB1='sdb1'
+	SDC1='sda1'
+
+fi
+
+echo "SDA ="$SDA
+echo "SDB ="$SDB
+echo "SDC ="$SDC
+echo "SDA1 ="$SDA1
+echo "SDA2 ="$SDA2
+echo "SDA3 ="$SDA3
+echo "SDA4 ="$SDA4
+echo "SDA5 ="$SDA5
+echo "SDA6 ="$SDA6
+echo "SDA7 ="$SDA7
+echo "SDB1 ="$SDB1
+echo "SDC1 ="$SDC1
+}
+
+check_usb_device()
+{
+    echo "check_usb_device to exclude usb device when partclone"
+    ls -l /sys/block/sdd > /tmp/sdd_is_usb.info
+    ls -l /sys/block/sdc > /tmp/sdc_is_usb.info
+    ls -l /sys/block/sdb > /tmp/sdb_is_usb.info
+    ls -l /sys/block/sda > /tmp/sda_is_usb.info
+    if [[ ! -z $(cat /tmp/sdd_is_usb.info | grep usb) ]]
+    then
+        type=sda_sdb_sdc
+		usb_type=sdd
+    elif [[ ! -z $(cat /tmp/sdc_is_usb.info | grep usb) ]]
+    then
+        type=sda_sdb_sdd
+		usb_type=sdc
+    elif [[ ! -z $(cat /tmp/sdb_is_usb.info | grep usb) ]]
+    then
+        type=sda_sdc_sdd
+		usb_type=sdb
+    elif [[ ! -z $(cat /tmp/sda_is_usb.info | grep usb) ]]
+    then
+        type=sdb_sdc_sdd
+		usb_type=sda
+    fi
+}
+
+check_usb_device
+echo "Hard Disk Type ="$type
+echo "USB Device Type ="$usb_type
+
+
+
+do_partclone_restore()
+{
+echo "do_partclone_restore"
 
 #Created a new DOS disklabel with disk
 echo "o
@@ -347,3 +636,41 @@ umount /mnt/boot
 umount /mnt
 
 echo "Partclone finshed! Please Reboot!"
+}
+
+
+main()
+{
+	#while true; do
+			#read -p "请输入需要打包的类型[1~9]:" type
+			case $type in
+					sda_sdb_sdc*)
+							check_sda_sdb_sdc
+							do_partclone_restore
+							exit
+							;;
+					sda_sdb_sdd*)
+							check_sda_sdb_sdd
+							do_partclone_restore
+							exit
+							;;
+					sda_sdc_sdd*)
+							check_sda_sdc_sdd
+							do_partclone_restore
+							exit
+							;;
+					sdb_sdc_sdd*)
+							check_sdb_sdc_sdd
+							do_partclone_restore
+							exit
+							;;
+					*)
+							echo "Hard Disk 系统类型出错."
+							;;
+			esac
+	#done
+}
+main
+
+
+
