@@ -15,19 +15,22 @@ SDA6='sda6'
 SDA7='sda7'
 SDB1='sdb1'
 SDC1='sdc1'
+standard_disk_size=30
 
 check_sda_sdb_sdc()
 {
 echo "check_sda_sdb_sdc"
 #检测sda sdb sdc三个磁盘哪个是40 GiB
-echo "Detection sda sdb sdc three disk which is 40 GiB"
+echo "Detection sda sdb sdc three disk which is greater than $standard_disk_size GiB standard_disk_size"
 # Detection sda
-fdisk -l /dev/sda | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sda.info
-if [ -z $(cat /tmp/sda.info) ]
+#fdisk -l /dev/sda | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sda.info
+sda_disk_size=`fdisk -l /dev/sda | grep -m1 ^Disk | awk '{print $3}'`
+echo "sda_disk_size="$sda_disk_size
+if [ "$sda_disk_size" -lt "$standard_disk_size" ]
 then 
-	echo "/tmp/sda.info have nothing"
+	echo "sda_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
 else  
-	echo "sda is 40GiB" 
+	echo "sda_disk_size is greater than $standard_disk_size GiB standard_disk_size"
 	SDA='sda'
 	SDB='sdb'
 	SDC='sdc'
@@ -43,12 +46,14 @@ else
 fi	
 
 # Detection sdb
-fdisk -l /dev/sdb | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdb.info
-if [ -z $(cat /tmp/sdb.info) ]
-then
-    echo "/tmp/sdb.info have nothing"
-else
-	echo "sdb is 40GiB"
+#fdisk -l /dev/sdb | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdb.info
+sdb_disk_size=`fdisk -l /dev/sdb | grep -m1 ^Disk | awk '{print $3}'`
+echo "sdb_disk_size="$sdb_disk_size
+if [ "$sdb_disk_size" -lt "$standard_disk_size" ]
+then 
+	echo "sdb_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
+else  
+	echo "sdb_disk_size is greater than $standard_disk_size GiB standard_disk_size"
 	SDA='sdb'
 	SDB='sda'
 	SDC='sdc'
@@ -65,12 +70,14 @@ else
 fi
 
 # Detection sdc
-fdisk -l /dev/sdc | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdc.info
-if [[ -z $(cat /tmp/sdc.info) ]]
-then
-    echo "/tmp/sdc.info have nothing"
-else
-	echo "sdc is 40GiB"
+#fdisk -l /dev/sdc | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdc.info
+sdc_disk_size=`fdisk -l /dev/sdc | grep -m1 ^Disk | awk '{print $3}'`
+echo "sdc_disk_size="$sdc_disk_size
+if [ "$sdc_disk_size" -lt "$standard_disk_size" ]
+then 
+	echo "sdc_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
+else  
+	echo "sdc_disk_size is greater than $standard_disk_size GiB standard_disk_size"
 	SDA='sdc'
 	SDB='sdb'
 	SDC='sda'
@@ -103,14 +110,16 @@ check_sdb_sdc_sdd()
 {
 echo "check_sdb_sdc_sdd"
 #检测sdb sdc sdd三个磁盘哪个是40 GiB
-echo "Detection sdb sdc sdd three disk which is 40 GiB"
+echo "Detection sdb sdc sdd three disk which is greater than $standard_disk_size GiB standard_disk_size"
 # Detection sdb
-fdisk -l /dev/sdb | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdb.info
-if [ -z $(cat /tmp/sdb.info) ]
+#fdisk -l /dev/sdb | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdb.info
+sdb_disk_size=`fdisk -l /dev/sdb | grep -m1 ^Disk | awk '{print $3}'`
+echo "sdb_disk_size="$sdb_disk_size
+if [ "$sdb_disk_size" -lt "$standard_disk_size" ]
 then 
-	echo "/tmp/sdb.info have nothing"
+	echo "sdb_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
 else  
-	echo "sdb is 40GiB" 
+	echo "sdb_disk_size is greater than $standard_disk_size GiB standard_disk_size"
 	SDA='sdb'
 	SDB='sdc'
 	SDC='sdd'
@@ -126,12 +135,14 @@ else
 fi	
 
 # Detection sdc
-fdisk -l /dev/sdc | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdc.info
-if [ -z $(cat /tmp/sdc.info) ]
-then
-	echo "/tmp/sdc.info have nothing"
-else
-	echo "sdc is 40GiB"
+#fdisk -l /dev/sdc | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdc.info
+sdc_disk_size=`fdisk -l /dev/sdc | grep -m1 ^Disk | awk '{print $3}'`
+echo "sdc_disk_size="$sdc_disk_size
+if [ "$sdc_disk_size" -lt "$standard_disk_size" ]
+then 
+	echo "sdc_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
+else  
+	echo "sdc_disk_size is greater than $standard_disk_size GiB standard_disk_size"
 	SDA='sdc'
 	SDB='sdb'
 	SDC='sdd'
@@ -148,12 +159,14 @@ else
 fi
 
 # Detection sdd
-fdisk -l /dev/sdd | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdd.info
-if [ -z $(cat /tmp/sdd.info) ]
-then
-    echo "/tmp/sdd.info have nothing"
-else
-	echo "sdd is 40GiB"
+#fdisk -l /dev/sdd | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdd.info
+sdd_disk_size=`fdisk -l /dev/sdd | grep -m1 ^Disk | awk '{print $3}'`
+echo "sdd_disk_size="$sdd_disk_size
+if [ "$sdd_disk_size" -lt "$standard_disk_size" ]
+then 
+	echo "sdd_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
+else  
+	echo "sdd_disk_size is greater than $standard_disk_size GiB standard_disk_size"
 	SDA='sdd'
 	SDB='sdb'
 	SDC='sdc'
@@ -187,14 +200,16 @@ check_sda_sdc_sdd()
 {
 echo "check_sda_sdc_sdd"
 #检测sda sdc sdd三个磁盘哪个是40 GiB
-echo "Detection sda sdc sdd three disk which is 40 GiB"
+echo "Detection sda sdc sdd three disk which is greater than $standard_disk_size GiB standard_disk_size"
 # Detection sda
-fdisk -l /dev/sda | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sda.info
-if [ -z $(cat /tmp/sda.info) ]
+#fdisk -l /dev/sda | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sda.info
+sda_disk_size=`fdisk -l /dev/sda | grep -m1 ^Disk | awk '{print $3}'`
+echo "sda_disk_size="$sda_disk_size
+if [ "$sda_disk_size" -lt "$standard_disk_size" ]
 then 
-	echo "/tmp/sda.info have nothing"
+	echo "sda_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
 else  
-	echo "sda is 40GiB" 
+	echo "sda_disk_size is greater than $standard_disk_size GiB standard_disk_size"
 	SDA='sda'
 	SDB='sdd'
 	SDC='sdc'
@@ -210,12 +225,14 @@ else
 fi	
 
 # Detection sdc
-fdisk -l /dev/sdc | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdc.info
-if [ -z $(cat /tmp/sdc.info) ]
-then
-	echo "/tmp/sdc.info have nothing"
-else
-	echo "sdc is 40GiB"
+#fdisk -l /dev/sdc | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdc.info
+sdc_disk_size=`fdisk -l /dev/sdc | grep -m1 ^Disk | awk '{print $3}'`
+echo "sdc_disk_size="$sdc_disk_size
+if [ "$sdc_disk_size" -lt "$standard_disk_size" ]
+then 
+	echo "sdc_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
+else  
+	echo "sdc_disk_size is greater than $standard_disk_size GiB standard_disk_size"
 	SDA='sdc'
 	SDB='sdd'
 	SDC='sda'
@@ -232,12 +249,14 @@ else
 fi
 
 # Detection sdd
-fdisk -l /dev/sdd | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdd.info
-if [ -z $(cat /tmp/sdd.info) ]
-then
-    echo "/tmp/sdd.info have nothing"
-else
-	echo "sdd is 40GiB"
+#fdisk -l /dev/sdd | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdd.info
+sdd_disk_size=`fdisk -l /dev/sdd | grep -m1 ^Disk | awk '{print $3}'`
+echo "sdd_disk_size="$sdd_disk_size
+if [ "$sdd_disk_size" -lt "$standard_disk_size" ]
+then 
+	echo "sdd_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
+else  
+	echo "sdd_disk_size is greater than $standard_disk_size GiB standard_disk_size"
 	SDA='sdd'
 	SDB='sda'
 	SDC='sdc'
@@ -272,14 +291,16 @@ check_sda_sdb_sdd()
 {
 echo "check_sda_sdc_sdd"
 #检测sda sdb sdd三个磁盘哪个是40 GiB
-echo "Detection sda sdb sdd three disk which is 40 GiB"
+echo "Detection sda sdb sdd three disk which is greater than $standard_disk_size GiB standard_disk_size"
 # Detection sda
-fdisk -l /dev/sda | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sda.info
-if [ -z $(cat /tmp/sda.info) ]
+#fdisk -l /dev/sda | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sda.info
+sda_disk_size=`fdisk -l /dev/sda | grep -m1 ^Disk | awk '{print $3}'`
+echo "sda_disk_size="$sda_disk_size
+if [ "$sda_disk_size" -lt "$standard_disk_size" ]
 then 
-	echo "/tmp/sda.info have nothing"
+	echo "sda_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
 else  
-	echo "sda is 40GiB" 
+	echo "sda_disk_size is greater than $standard_disk_size GiB standard_disk_size"
 	SDA='sda'
 	SDB='sdb'
 	SDC='sdd'
@@ -295,12 +316,14 @@ else
 fi	
 
 # Detection sdb
-fdisk -l /dev/sdb | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdb.info
-if [ -z $(cat /tmp/sdb.info) ]
-then
-	echo "/tmp/sdb.info have nothing"
-else
-	echo "sdb is 40GiB"
+#fdisk -l /dev/sdb | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdb.info
+sdb_disk_size=`fdisk -l /dev/sdb | grep -m1 ^Disk | awk '{print $3}'`
+echo "sdb_disk_size="$sdb_disk_size
+if [ "$sdb_disk_size" -lt "$standard_disk_size" ]
+then 
+	echo "sdb_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
+else  
+	echo "sdb_disk_size is greater than $standard_disk_size GiB standard_disk_size"
 	SDA='sdb'
 	SDB='sdd'
 	SDC='sda'
@@ -317,12 +340,14 @@ else
 fi
 
 # Detection sdd
-fdisk -l /dev/sdd | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdd.info
-if [ -z $(cat /tmp/sdd.info) ]
-then
-    echo "/tmp/sdd.info have nothing"
-else
-	echo "sdd is 40GiB"
+#fdisk -l /dev/sdd | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdd.info
+sdd_disk_size=`fdisk -l /dev/sdd | grep -m1 ^Disk | awk '{print $3}'`
+echo "sdd_disk_size="$sdd_disk_size
+if [ "$sdd_disk_size" -lt "$standard_disk_size" ]
+then 
+	echo "sdd_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
+else  
+	echo "sdd_disk_size is greater than $standard_disk_size GiB standard_disk_size"
 	SDA='sdd'
 	SDB='sdb'
 	SDC='sda'
