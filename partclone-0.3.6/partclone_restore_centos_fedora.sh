@@ -1,5 +1,8 @@
 #! /bin/bash
-
+echo "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+echo "                        Welcome to partclone restore centos and fedora os      "
+echo "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
+echo
 SDA='sda'
 SDB='sdb'
 SDC='sdc'
@@ -622,7 +625,13 @@ umount /mnt
 mount /dev/$SDA6 /mnt
 mount /dev/$SDA5 /mnt/boot
 mkdir -p /mnt/mnt/image_directory
-echo "Copying the centos image file to the fedora root partition.......Please wait a while for 5 minutes..."
+echo "Clone the centos image file to the fedora root partition.......Please wait a while for 5 minutes..."
+rm -fr /mnt/mnt/image_directory/centos_boot_partition.img
+fsck /dev/$SDA1
+partclone.extfs -c -d -s /dev/$SDA1 -o /mnt/mnt/image_directory/centos_boot_partition.img
+rm -fr /mnt/mnt/image_directory/centos_root_partition.img
+fsck /dev/$SDA2
+partclone.extfs -c -d -s /dev/$SDA2 -o /mnt/mnt/image_directory/centos_root_partition.img
 #/bin/cp -f /run/media/liveuser/Fedora-23/mnt/image_directory/centos_boot_sda1.img /mnt/mnt/image_directory/
 #/bin/cp -f /run/media/liveuser/Fedora-23/mnt/image_directory/centos_root_sda2.img /mnt/mnt/image_directory/
 umount /mnt/boot
