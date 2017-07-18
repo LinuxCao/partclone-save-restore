@@ -613,9 +613,9 @@ echo "/dev/$SDA2: ""SDA2_UUID="$SDA2_UUID
 echo "/dev/$SDA3: ""SDA3_UUID="$SDA3_UUID
 echo "/dev/$SDB1: ""SDB1_UUID="$SDB1_UUID
 echo "/dev/$SDC1: ""SDC1_UUID="$SDC1_UUID
-echo "/dev/$SDA5: ""SDC1_UUID="$SDA5_UUID
-echo "/dev/$SDA6: ""SDC1_UUID="$SDA6_UUID
-echo "/dev/$SDA7: ""SDC1_UUID="$SDA7_UUID
+echo "/dev/$SDA5: ""SDA5_UUID="$SDA5_UUID
+echo "/dev/$SDA6: ""SDA6_UUID="$SDA6_UUID
+echo "/dev/$SDA7: ""SDA7_UUID="$SDA7_UUID
 
 # comment swap UUID but /dev/sdaX table within etc/fstab because of reboot problem
 mount /dev/$SDA2 /mnt
