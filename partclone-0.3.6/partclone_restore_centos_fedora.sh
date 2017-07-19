@@ -1,6 +1,6 @@
 #! /bin/bash
 echo "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
-echo "                        Welcome to partclone restore centos and fedora os      "
+echo "                        Welcome to partclone restore centos os      "
 echo "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 echo
 SDA='sda'
@@ -15,7 +15,23 @@ SDA6='sda6'
 SDA7='sda7'
 SDB1='sdb1'
 SDC1='sdc1'
-standard_disk_size=30.2
+standard_disk_size=900.2
+restore_image_directory="/run/media/liveuser/OSEASY/mnt/image_directory"
+
+SDA1_START=2048
+SDA1_END=1026047
+SDA2_START=1026048
+SDA2_END=1678747647
+SDA3_START=1678747648
+SDA3_END=1687136255
+SDA4_START=1687136256
+SDA4_END=1953523711
+SDA5_START=1687138304
+SDA5_END=1688162303
+SDA6_START=1688164352
+SDA6_END=1793021951
+SDA7_START=1793024000
+SDA7_END=1801412607
 
 check_sda_sdb_sdc()
 {
@@ -289,7 +305,7 @@ echo "SDC1 ="$SDC1
 
 check_sda_sdb_sdd()
 {
-echo "check_sda_sdc_sdd"
+echo "check_sda_sdb_sdd"
 #检测sda sdb sdd三个磁盘哪个是40 GiB
 echo "Detection sda sdb sdd three disk which is greater than $standard_disk_size GiB standard_disk_size"
 # Detection sda
@@ -406,6 +422,7 @@ check_usb_device()
 check_usb_device
 echo "Hard Disk Type ="$type
 echo "USB Device Type ="$usb_type
+echo "restore_image_directory ="$restore_image_directory
 
 
 
@@ -453,14 +470,16 @@ echo "d
 w
 " | fdisk /dev/$SDC
 
+sudo partprobe
+
 # add new sda partition 
 # default add sda1 sda2 sda3 sda4 sda5 sda6 sda7 partition
 # add centos_boot_partition sda1
 echo "n
 p
 1
-2048
-1026047
+$SDA1_START
+$SDA1_END
 w
 " | fdisk /dev/$SDA
 
@@ -468,8 +487,8 @@ w
 echo "n
 p
 2
-1026048
-44038143
+$SDA2_START
+$SDA2_END
 w
 " | fdisk /dev/$SDA
 
@@ -477,8 +496,8 @@ w
 echo "n
 p
 3
-44038144
-48232447
+$SDA3_START
+$SDA3_END
 t
 3
 82
@@ -488,34 +507,35 @@ w
 # add Extended Partition sda4
 echo "n
 e
-48232448
-83886079
+$SDA4_START
+$SDA4_END
 w
 " | fdisk /dev/$SDA
 
 # add fedora_boot_partition sda5
 echo "n
-48234496
-49258495
+$SDA5_START
+$SDA5_END
 w
 " | fdisk /dev/$SDA
 
 # add fedora_root_partition sda6
 echo "n
-49260544
-80318463
+$SDA6_START
+$SDA6_END
 w
 " | fdisk /dev/$SDA
 
 # add fedora_swap_partition sda7
 echo "n
-80320512
-83886079
+$SDA7_START
+$SDA7_END
 t
 7
 82
 w
 " | fdisk /dev/$SDA
+
 
 # add /opt/sata partition sdb1
 echo "n
@@ -535,13 +555,17 @@ p
 w
 " | fdisk /dev/$SDC
 
+sudo partprobe
 
-# specifies the flag for the boot partition default = /dev/sda5
+
+# specifies the flag for the boot partition default = /dev/sda1
 echo "a
-5
+1
 
 w
 " | fdisk /dev/$SDA
+
+sudo partprobe
 
 # check /dev/sda partition information
 echo "p
@@ -589,16 +613,26 @@ echo "y
 echo "y
 " | mkfs -t ext4 /dev/$SDC1
 
+sudo partprobe
+
+
 
 # restore sda sdb sdc partition use of partclone.extfs command
-partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_boot_sda1.img -o /dev/$SDA1
-partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_root_sda2.img -o /dev/$SDA2
-partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/fedora_boot_sda5.img -o /dev/$SDA5
-partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/fedora_root_sda6.img -o /dev/$SDA6
-#partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_opt_sata_sdb1.img -o /dev/$SDB1
-#partclone.extfs -r -s /run/media/liveuser/Fedora-23/mnt/image_directory/centos_opt_ssd_sdc1.img -o /dev/$SDC1
+# partclone restore centos_boot_partition.img
+partclone.extfs -r -d -s $restore_image_directory/centos_boot_partition.img -o /dev/$SDA1
+# partclone restore centos_root_partition.img
+# gzip centos_root_partition.img
+echo "gunzip the centos_root_partition.img.gz to centos_root_partition.img.......Please wait a while for 5 minutes..."
+gunzip -c $restore_image_directory/centos_root_partition.img.gz > $restore_image_directory/centos_root_partition.img
+partclone.extfs -r -d -s $restore_image_directory/centos_root_partition.img -o /dev/$SDA2
 
-# get all partition UUID
+# partclone restore fedora_boot_partition.img
+partclone.extfs -r -d -s $restore_image_directory/fedora_boot_partition.img -o /dev/$SDA5
+# partclone restore fedora_root_partition.img
+partclone.extfs -r -d -s $restore_image_directory/fedora_root_partition.img -o /dev/$SDA6
+
+
+# get all new partition UUID
 SDA1_UUID=`blkid  /dev/$SDA1 | grep -m1 UUID | awk '{print $2}' | sed 's/\"//g'`
 SDA2_UUID=`blkid  /dev/$SDA2 | grep -m1 UUID | awk '{print $2}' | sed 's/\"//g'`
 SDA3_UUID=`blkid  /dev/$SDA3 | grep -m1 UUID | awk '{print $2}' | sed 's/\"//g'`
@@ -617,59 +651,38 @@ echo "/dev/$SDA5: ""SDA5_UUID="$SDA5_UUID
 echo "/dev/$SDA6: ""SDA6_UUID="$SDA6_UUID
 echo "/dev/$SDA7: ""SDA7_UUID="$SDA7_UUID
 
-# comment swap UUID but /dev/sdaX table within etc/fstab because of reboot problem
+
+#Mask the old UUID to replace the new UUID instead:swap /opt/sata /opt/ssd centos system
 mount /dev/$SDA2 /mnt
 mount /dev/$SDA1 /mnt/boot
-#sed -i "s/UUID=.* swap/#UUID=.* swap/g" /mnt/etc/fstab
-#echo "/dev/sda3 swap swap defaults 0 0" >> /mnt/etc/fstab
-cp -f /opt/partclone-0.3.6/centos_etc_fstab /mnt/etc/fstab
-
-echo "$SDA2_UUID	/ 	ext4 	defaults 	1 1" >> /mnt/etc/fstab
-echo "$SDA1_UUID 	/boot 	ext4 	defaults 	1 2" >> /mnt/etc/fstab
+sed -i "s/UUID=.* swap/#UUID=.* swap/g" /mnt/etc/fstab
+sed -i "s/UUID=.* \/opt\/sata/#UUID=.* \/opt\/sata/g" /mnt/etc/fstab
+sed -i "s/UUID=.* \/opt\/ssd/#UUID=.* \/opt\/ssd/g" /mnt/etc/fstab
 echo "$SDB1_UUID 	/opt/sata 	ext4 	defaults 	1 2" >> /mnt/etc/fstab
 echo "$SDC1_UUID 	/opt/ssd 	ext4 	defaults 	1 2" >> /mnt/etc/fstab
 echo "$SDA3_UUID 	swap 	swap 	defaults 	0 0" >> /mnt/etc/fstab
-
 umount /mnt/boot
 umount /mnt
 
+#Mask the old UUID to replace the new UUID instead:swap fedora system
 mount /dev/$SDA6 /mnt
 mount /dev/$SDA5 /mnt/boot
-#sed -i "s/UUID=.* swap/#UUID=.* swap/g" /mnt/etc/fstab
-#echo "/dev/sda7 swap swap defaults 0 0" >> /mnt/etc/fstab
-cp -f /opt/partclone-0.3.6/fedora_etc_fstab /mnt/etc/fstab
-
-echo "$SDA6_UUID	/ 	ext4 	defaults 	1 1" >> /mnt/etc/fstab
-echo "$SDA5_UUID 	/boot 	ext4 	defaults 	1 2" >> /mnt/etc/fstab
+sed -i "s/UUID=.* swap/#UUID=.* swap/g" /mnt/etc/fstab
 echo "$SDA7_UUID 	swap 	swap 	defaults 	0 0" >> /mnt/etc/fstab
-
 umount /mnt/boot
 umount /mnt
 
-# Copy the centos image file to the fedora root partition
-mount /dev/$SDA6 /mnt
-mount /dev/$SDA5 /mnt/boot
-mkdir -p /mnt/mnt/image_directory
-echo "Clone the centos image file to the fedora root partition.......Please wait a while for 5 minutes..."
-rm -fr /mnt/mnt/image_directory/centos_boot_partition.img
-fsck /dev/$SDA1
-partclone.extfs -c -d -s /dev/$SDA1 -o /mnt/mnt/image_directory/centos_boot_partition.img
-rm -fr /mnt/mnt/image_directory/centos_root_partition.img
-fsck /dev/$SDA2
-partclone.extfs -c -d -s /dev/$SDA2 -o /mnt/mnt/image_directory/centos_root_partition.img
-#/bin/cp -f /run/media/liveuser/Fedora-23/mnt/image_directory/centos_boot_sda1.img /mnt/mnt/image_directory/
-#/bin/cp -f /run/media/liveuser/Fedora-23/mnt/image_directory/centos_root_sda2.img /mnt/mnt/image_directory/
-umount /mnt/boot
-umount /mnt
 
 # specifies bootloader driver when boot system
 mount /dev/$SDA6 /mnt
 mount /dev/$SDA5 /mnt/boot
-grub2-install --root-directory=/mnt /dev/$SDA
+#grub2-install --root-directory=/mnt /dev/$SDA
+grub2-install --boot-directory=/mnt/boot /dev/$SDA
 umount /mnt/boot
 umount /mnt
 
 echo "Partclone finshed! Please Reboot!"
+
 }
 
 
