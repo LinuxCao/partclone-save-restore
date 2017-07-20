@@ -16,7 +16,7 @@ SDA7='sda7'
 SDB1='sdb1'
 SDC1='sdc1'
 standard_disk_size=900.2
-restore_image_directory="/run/media/liveuser/OSEASY/mnt/image_directory"
+restore_image_directory="/run/initramfs/live/mnt/image_directory"
 
 SDA1_START=2048
 SDA1_END=1026047
@@ -461,11 +461,35 @@ w
 # delete sdb 
 echo "d
 
+d
+
+d
+
+d
+
+d
+
+d
+
+d
+
 w
 " | fdisk /dev/$SDB
 
 # delete sdc
 echo "d
+
+d
+
+d
+
+d
+
+d
+
+d
+
+d
 
 w
 " | fdisk /dev/$SDC
@@ -622,8 +646,8 @@ sudo partprobe
 partclone.extfs -r -d -s $restore_image_directory/centos_boot_partition.img -o /dev/$SDA1
 # partclone restore centos_root_partition.img
 # gzip centos_root_partition.img
-echo "gunzip the centos_root_partition.img.gz to centos_root_partition.img.......Please wait a while for 5 minutes..."
-gunzip -c $restore_image_directory/centos_root_partition.img.gz > $restore_image_directory/centos_root_partition.img
+#echo "gunzip the centos_root_partition.img.gz to centos_root_partition.img.......Please wait a while for 5 minutes..."
+#gunzip -c $restore_image_directory/centos_root_partition.img.gz > $restore_image_directory/centos_root_partition.img
 partclone.extfs -r -d -s $restore_image_directory/centos_root_partition.img -o /dev/$SDA2
 
 # partclone restore fedora_boot_partition.img
@@ -655,9 +679,9 @@ echo "/dev/$SDA7: ""SDA7_UUID="$SDA7_UUID
 #Mask the old UUID to replace the new UUID instead:swap /opt/sata /opt/ssd centos system
 mount /dev/$SDA2 /mnt
 mount /dev/$SDA1 /mnt/boot
-sed -i "s/UUID=.* swap/#UUID=.* swap/g" /mnt/etc/fstab
-sed -i "s/UUID=.* \/opt\/sata/#UUID=.* \/opt\/sata/g" /mnt/etc/fstab
-sed -i "s/UUID=.* \/opt\/ssd/#UUID=.* \/opt\/ssd/g" /mnt/etc/fstab
+cp -f /opt/partclone-0.3.6/centos_etc_fstab /mnt/etc/fstab
+echo "$SDA1_UUID 	/boot 	ext4 	defaults 	1 2" >> /mnt/etc/fstab
+echo "$SDA2_UUID	/ 	ext4 	defaults 	1 1" >> /mnt/etc/fstab
 echo "$SDB1_UUID 	/opt/sata 	ext4 	defaults 	1 2" >> /mnt/etc/fstab
 echo "$SDC1_UUID 	/opt/ssd 	ext4 	defaults 	1 2" >> /mnt/etc/fstab
 echo "$SDA3_UUID 	swap 	swap 	defaults 	0 0" >> /mnt/etc/fstab
@@ -667,8 +691,25 @@ umount /mnt
 #Mask the old UUID to replace the new UUID instead:swap fedora system
 mount /dev/$SDA6 /mnt
 mount /dev/$SDA5 /mnt/boot
-sed -i "s/UUID=.* swap/#UUID=.* swap/g" /mnt/etc/fstab
+cp -f /opt/partclone-0.3.6/fedora_etc_fstab /mnt/etc/fstab
+echo "$SDA5_UUID 	/boot 	ext4 	defaults 	1 2" >> /mnt/etc/fstab
+echo "$SDA6_UUID	/ 	ext4 	defaults 	1 1" >> /mnt/etc/fstab
 echo "$SDA7_UUID 	swap 	swap 	defaults 	0 0" >> /mnt/etc/fstab
+umount /mnt/boot
+umount /mnt
+
+
+# Clone the centos image file to the fedora root partition
+mount /dev/$SDA6 /mnt
+mount /dev/$SDA5 /mnt/boot
+mkdir -p /mnt/mnt/image_directory
+echo "Clone the centos image file to the fedora root partition.......Please wait a while for 5 minutes..."
+rm -fr /mnt/mnt/image_directory/centos_boot_partition.img
+fsck /dev/$SDA1
+partclone.extfs -c -d -s /dev/$SDA1 -o /mnt/mnt/image_directory/centos_boot_partition.img
+rm -fr /mnt/mnt/image_directory/centos_root_partition.img
+fsck /dev/$SDA2
+partclone.extfs -c -d -s /dev/$SDA2 -o /mnt/mnt/image_directory/centos_root_partition.img
 umount /mnt/boot
 umount /mnt
 
