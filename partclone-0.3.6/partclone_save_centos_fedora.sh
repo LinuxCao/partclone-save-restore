@@ -150,6 +150,7 @@ do_partclone_save_sdd()
 	# gzip centos_root_partition.img
 	echo "gzip the centos_root_partition.img to centos_root_partition.img.gz.......Please wait a while for 5 minutes..."
 	gzip -c -1 $save_image_directory/centos_root_partition.img > $save_image_directory/centos_root_partition.img.gz
+
 	
 	# partclone save fedora_boot_partition.img
 	rm -fr $save_image_directory/fedora_boot_partition.img

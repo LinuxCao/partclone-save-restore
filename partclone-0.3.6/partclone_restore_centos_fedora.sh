@@ -17,6 +17,7 @@ SDB1='sdb1'
 SDC1='sdc1'
 standard_disk_size=900.2
 restore_image_directory="/run/initramfs/live/mnt/image_directory"
+centos_root_partition_restore_image_directory="/run/initramfs"
 
 SDA1_START=2048
 SDA1_END=1026047
@@ -646,9 +647,9 @@ sudo partprobe
 partclone.extfs -r -d -s $restore_image_directory/centos_boot_partition.img -o /dev/$SDA1
 # partclone restore centos_root_partition.img
 # gzip centos_root_partition.img
-#echo "gunzip the centos_root_partition.img.gz to centos_root_partition.img.......Please wait a while for 5 minutes..."
-#gunzip -c $restore_image_directory/centos_root_partition.img.gz > $restore_image_directory/centos_root_partition.img
-partclone.extfs -r -d -s $restore_image_directory/centos_root_partition.img -o /dev/$SDA2
+echo "gunzip the centos_root_partition.img.gz to centos_root_partition.img.......Please wait a while for 5 minutes..."
+gunzip -c $restore_image_directory/centos_root_partition.img.gz > $centos_root_partition_restore_image_directory/centos_root_partition.img
+partclone.extfs -r -d -s $centos_root_partition_restore_image_directory/centos_root_partition.img -o /dev/$SDA2
 
 # partclone restore fedora_boot_partition.img
 partclone.extfs -r -d -s $restore_image_directory/fedora_boot_partition.img -o /dev/$SDA5
