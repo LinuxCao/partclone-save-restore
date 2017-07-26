@@ -3,6 +3,7 @@ echo "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 echo "                        Welcome to partclone restore centos os      "
 echo "-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-"
 echo
+#Set the default value
 SDA='sda'
 SDB='sdb'
 SDC='sdc'
@@ -15,417 +16,175 @@ SDA6='sda6'
 SDA7='sda7'
 SDB1='sdb1'
 SDC1='sdc1'
-standard_disk_size=900.2
-restore_image_directory="/run/initramfs/live/mnt/image_directory"
-centos_root_partition_restore_image_directory="/run/initramfs"
+
+#Device     Boot      Start        End    Sectors  Size Id Type
+#/dev/sda1  *          2048    1026047    1024000  500M 83 Linux
+#/dev/sda2          1026048 1846519807 1845493760  880G 83 Linux
+#/dev/sda3       1846519808 1888462847   41943040   20G 82 Linux swap / Solaris
+#/dev/sda4       1888462848 1953523711   65060864   31G  5 Extended
+#/dev/sda5       1888466944 1889490943    1024000  500M 83 Linux
+#/dev/sda6       1889492992 1946150911   56657920   27G 83 Linux
+#/dev/sda7       1946152960 1953523711    7370752  3.5G 82 Linux swap / Solaris
 
 SDA1_START=2048
 SDA1_END=1026047
 SDA2_START=1026048
-SDA2_END=1678747647
-SDA3_START=1678747648
-SDA3_END=1687136255
-SDA4_START=1687136256
+SDA2_END=1846519807
+SDA3_START=1846519808
+SDA3_END=1888462847
+SDA4_START=1888462848
 SDA4_END=1953523711
-SDA5_START=1687138304
-SDA5_END=1688162303
-SDA6_START=1688164352
-SDA6_END=1793021951
-SDA7_START=1793024000
-SDA7_END=1801412607
+SDA5_START=1888466944
+SDA5_END=1889490943
+SDA6_START=1889492992
+SDA6_END=1946150911
+SDA7_START=1946152960
+SDA7_END=1953523711
 
-check_sda_sdb_sdc()
-{
-echo "check_sda_sdb_sdc"
-#检测sda sdb sdc三个磁盘哪个是40 GiB
-echo "Detection sda sdb sdc three disk which is greater than $standard_disk_size GiB standard_disk_size"
-# Detection sda
-#fdisk -l /dev/sda | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sda.info
-sda_disk_size=`fdisk -l /dev/sda | grep -m1 ^Disk | awk '{print $3}'`
-echo "sda_disk_size="$sda_disk_size
-if [ `echo "$sda_disk_size < $standard_disk_size" | bc ` -eq 1 ]
-then 
-	echo "sda_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
-else  
-	echo "sda_disk_size is greater than $standard_disk_size GiB standard_disk_size"
-	SDA='sda'
-	SDB='sdb'
-	SDC='sdc'
-	SDA1='sda1'
-	SDA2='sda2'
-	SDA3='sda3'
-	SDA4='sda4'
-	SDA5='sda5'
-	SDA6='sda6'
-	SDA7='sda7'
-	SDB1='sdb1'
-	SDC1='sdc1'
-fi	
+sata_standard_disk_size=900.2
+ssd_standard_disk_size=350.2
+restore_image_directory="/run/initramfs/live/mnt/image_directory"
+#restore_image_directory=" /run/media/liveuser/OSEASY/mnt/image_directory"
+centos_root_partition_restore_image_directory="/run/initramfs"
+#centos_root_partition_restore_image_directory="/run/media/liveuser/OSEASY/mnt/image_directory"
 
-# Detection sdb
-#fdisk -l /dev/sdb | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdb.info
-sdb_disk_size=`fdisk -l /dev/sdb | grep -m1 ^Disk | awk '{print $3}'`
-echo "sdb_disk_size="$sdb_disk_size
-if [ `echo "$sdb_disk_size < $standard_disk_size" | bc ` -eq 1 ]
-then 
-	echo "sdb_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
-else  
-	echo "sdb_disk_size is greater than $standard_disk_size GiB standard_disk_size"
-	SDA='sdb'
-	SDB='sda'
-	SDC='sdc'
-	SDA1='sdb1'
-	SDA2='sdb2'
-	SDA3='sdb3'
-	SDA4='sdb4'
-	SDA5='sdb5'
-	SDA6='sdb6'
-	SDA7='sdb7'
-	SDB1='sda1'
-	SDC1='sdc1'
+type="success"
 
-fi
+ls /sys/block > /tmp/disk.info
 
-# Detection sdc
-#fdisk -l /dev/sdc | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdc.info
-sdc_disk_size=`fdisk -l /dev/sdc | grep -m1 ^Disk | awk '{print $3}'`
-echo "sdc_disk_size="$sdc_disk_size
-if [ `echo "$sdc_disk_size < $standard_disk_size" | bc ` -eq 1 ]
-then 
-	echo "sdc_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
-else  
-	echo "sdc_disk_size is greater than $standard_disk_size GiB standard_disk_size"
-	SDA='sdc'
-	SDB='sdb'
-	SDC='sda'
-	SDA1='sdc1'
-	SDA2='sdc2'
-	SDA3='sdc3'
-	SDA4='sdc4'
-	SDA5='sdc5'
-	SDA6='sdc6'
-	SDA7='sdc7'
-	SDB1='sdb1'
-	SDC1='sda1'
-
-fi
-echo "SDA ="$SDA
-echo "SDB ="$SDB
-echo "SDC ="$SDC
-echo "SDA1 ="$SDA1
-echo "SDA2 ="$SDA2
-echo "SDA3 ="$SDA3
-echo "SDA4 ="$SDA4
-echo "SDA5 ="$SDA5
-echo "SDA6 ="$SDA6
-echo "SDA7 ="$SDA7
-echo "SDB1 ="$SDB1
-echo "SDC1 ="$SDC1
-}
-
-check_sdb_sdc_sdd()
-{
-echo "check_sdb_sdc_sdd"
-#检测sdb sdc sdd三个磁盘哪个是40 GiB
-echo "Detection sdb sdc sdd three disk which is greater than $standard_disk_size GiB standard_disk_size"
-# Detection sdb
-#fdisk -l /dev/sdb | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdb.info
-sdb_disk_size=`fdisk -l /dev/sdb | grep -m1 ^Disk | awk '{print $3}'`
-echo "sdb_disk_size="$sdb_disk_size
-if [ `echo "$sdb_disk_size < $standard_disk_size" | bc ` -eq 1 ]
-then 
-	echo "sdb_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
-else  
-	echo "sdb_disk_size is greater than $standard_disk_size GiB standard_disk_size"
-	SDA='sdb'
-	SDB='sdc'
-	SDC='sdd'
-	SDA1='sdb1'
-	SDA2='sdb2'
-	SDA3='sdb3'
-	SDA4='sdb4'
-	SDA5='sdb5'
-	SDA6='sdb6'
-	SDA7='sdb7'
-	SDB1='sdc1'
-	SDC1='sdd1'
-fi	
-
-# Detection sdc
-#fdisk -l /dev/sdc | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdc.info
-sdc_disk_size=`fdisk -l /dev/sdc | grep -m1 ^Disk | awk '{print $3}'`
-echo "sdc_disk_size="$sdc_disk_size
-if [ `echo "$sdc_disk_size < $standard_disk_size" | bc ` -eq 1 ]
-then 
-	echo "sdc_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
-else  
-	echo "sdc_disk_size is greater than $standard_disk_size GiB standard_disk_size"
-	SDA='sdc'
-	SDB='sdb'
-	SDC='sdd'
-	SDA1='sdc1'
-	SDA2='sdc2'
-	SDA3='sdc3'
-	SDA4='sdc4'
-	SDA5='sdc5'
-	SDA6='sdc6'
-	SDA7='sdc7'
-	SDB1='sdb1'
-	SDC1='sdd1'
-
-fi
-
-# Detection sdd
-#fdisk -l /dev/sdd | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdd.info
-sdd_disk_size=`fdisk -l /dev/sdd | grep -m1 ^Disk | awk '{print $3}'`
-echo "sdd_disk_size="$sdd_disk_size
-if [ `echo "$sdd_disk_size < $standard_disk_size" | bc ` -eq 1 ]
-then 
-	echo "sdd_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
-else  
-	echo "sdd_disk_size is greater than $standard_disk_size GiB standard_disk_size"
-	SDA='sdd'
-	SDB='sdb'
-	SDC='sdc'
-	SDA1='sdd1'
-	SDA2='sdd2'
-	SDA3='sdd3'
-	SDA4='sdd4'
-	SDA5='sdd5'
-	SDA6='sdd6'
-	SDA7='sdd7'
-	SDB1='sdb1'
-	SDC1='sdc1'
-
-fi
-echo "SDA ="$SDA
-echo "SDB ="$SDB
-echo "SDC ="$SDC
-echo "SDA1 ="$SDA1
-echo "SDA2 ="$SDA2
-echo "SDA3 ="$SDA3
-echo "SDA4 ="$SDA4
-echo "SDA5 ="$SDA5
-echo "SDA6 ="$SDA6
-echo "SDA7 ="$SDA7
-echo "SDB1 ="$SDB1
-echo "SDC1 ="$SDC1
-}
-
-
-check_sda_sdc_sdd()
-{
-echo "check_sda_sdc_sdd"
-#检测sda sdc sdd三个磁盘哪个是40 GiB
-echo "Detection sda sdc sdd three disk which is greater than $standard_disk_size GiB standard_disk_size"
-# Detection sda
-#fdisk -l /dev/sda | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sda.info
-sda_disk_size=`fdisk -l /dev/sda | grep -m1 ^Disk | awk '{print $3}'`
-echo "sda_disk_size="$sda_disk_size
-if [ `echo "$sda_disk_size < $standard_disk_size" | bc ` -eq 1 ]
-then 
-	echo "sda_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
-else  
-	echo "sda_disk_size is greater than $standard_disk_size GiB standard_disk_size"
-	SDA='sda'
-	SDB='sdd'
-	SDC='sdc'
-	SDA1='sda1'
-	SDA2='sda2'
-	SDA3='sda3'
-	SDA4='sda4'
-	SDA5='sda5'
-	SDA6='sda6'
-	SDA7='sda7'
-	SDB1='sdd1'
-	SDC1='sdc1'
-fi	
-
-# Detection sdc
-#fdisk -l /dev/sdc | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdc.info
-sdc_disk_size=`fdisk -l /dev/sdc | grep -m1 ^Disk | awk '{print $3}'`
-echo "sdc_disk_size="$sdc_disk_size
-if [ `echo "$sdc_disk_size < $standard_disk_size" | bc ` -eq 1 ]
-then 
-	echo "sdc_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
-else  
-	echo "sdc_disk_size is greater than $standard_disk_size GiB standard_disk_size"
-	SDA='sdc'
-	SDB='sdd'
-	SDC='sda'
-	SDA1='sdc1'
-	SDA2='sdc2'
-	SDA3='sdc3'
-	SDA4='sdc4'
-	SDA5='sdc5'
-	SDA6='sdc6'
-	SDA7='sdc7'
-	SDB1='sdd1'
-	SDC1='sda1'
-
-fi
-
-# Detection sdd
-#fdisk -l /dev/sdd | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdd.info
-sdd_disk_size=`fdisk -l /dev/sdd | grep -m1 ^Disk | awk '{print $3}'`
-echo "sdd_disk_size="$sdd_disk_size
-if [ `echo "$sdd_disk_size < $standard_disk_size" | bc ` -eq 1 ]
-then 
-	echo "sdd_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
-else  
-	echo "sdd_disk_size is greater than $standard_disk_size GiB standard_disk_size"
-	SDA='sdd'
-	SDB='sda'
-	SDC='sdc'
-	SDA1='sdd1'
-	SDA2='sdd2'
-	SDA3='sdd3'
-	SDA4='sdd4'
-	SDA5='sdd5'
-	SDA6='sdd6'
-	SDA7='sdd7'
-	SDB1='sda1'
-	SDC1='sdc1'
-
-fi
-
-echo "SDA ="$SDA
-echo "SDB ="$SDB
-echo "SDC ="$SDC
-echo "SDA1 ="$SDA1
-echo "SDA2 ="$SDA2
-echo "SDA3 ="$SDA3
-echo "SDA4 ="$SDA4
-echo "SDA5 ="$SDA5
-echo "SDA6 ="$SDA6
-echo "SDA7 ="$SDA7
-echo "SDB1 ="$SDB1
-echo "SDC1 ="$SDC1
-}
-
-
-check_sda_sdb_sdd()
-{
-echo "check_sda_sdb_sdd"
-#检测sda sdb sdd三个磁盘哪个是40 GiB
-echo "Detection sda sdb sdd three disk which is greater than $standard_disk_size GiB standard_disk_size"
-# Detection sda
-#fdisk -l /dev/sda | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sda.info
-sda_disk_size=`fdisk -l /dev/sda | grep -m1 ^Disk | awk '{print $3}'`
-echo "sda_disk_size="$sda_disk_size
-if [ `echo "$sda_disk_size < $standard_disk_size" | bc ` -eq 1 ]
-then 
-	echo "sda_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
-else  
-	echo "sda_disk_size is greater than $standard_disk_size GiB standard_disk_size"
-	SDA='sda'
-	SDB='sdb'
-	SDC='sdd'
-	SDA1='sda1'
-	SDA2='sda2'
-	SDA3='sda3'
-	SDA4='sda4'
-	SDA5='sda5'
-	SDA6='sda6'
-	SDA7='sda7'
-	SDB1='sdb1'
-	SDC1='sdd1'
-fi	
-
-# Detection sdb
-#fdisk -l /dev/sdb | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdb.info
-sdb_disk_size=`fdisk -l /dev/sdb | grep -m1 ^Disk | awk '{print $3}'`
-echo "sdb_disk_size="$sdb_disk_size
-if [ `echo "$sdb_disk_size < $standard_disk_size" | bc ` -eq 1 ]
-then 
-	echo "sdb_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
-else  
-	echo "sdb_disk_size is greater than $standard_disk_size GiB standard_disk_size"
-	SDA='sdb'
-	SDB='sdd'
-	SDC='sda'
-	SDA1='sdb1'
-	SDA2='sdb2'
-	SDA3='sdb3'
-	SDA4='sdb4'
-	SDA5='sdb5'
-	SDA6='sdb6'
-	SDA7='sdb7'
-	SDB1='sdd1'
-	SDC1='sda1'
-
-fi
-
-# Detection sdd
-#fdisk -l /dev/sdd | grep -m1 ^Disk | awk '{print $3 " " $4}' | grep 40 > /tmp/sdd.info
-sdd_disk_size=`fdisk -l /dev/sdd | grep -m1 ^Disk | awk '{print $3}'`
-echo "sdd_disk_size="$sdd_disk_size
-if [ `echo "$sdd_disk_size < $standard_disk_size" | bc ` -eq 1 ]
-then 
-	echo "sdd_disk_size is smaller than $standard_disk_size GiB standard_disk_size"
-else  
-	echo "sdd_disk_size is greater than $standard_disk_size GiB standard_disk_size"
-	SDA='sdd'
-	SDB='sdb'
-	SDC='sda'
-	SDA1='sdd1'
-	SDA2='sdd2'
-	SDA3='sdd3'
-	SDA4='sdd4'
-	SDA5='sdd5'
-	SDA6='sdd6'
-	SDA7='sdd7'
-	SDB1='sdb1'
-	SDC1='sda1'
-
-fi
-
-echo "SDA ="$SDA
-echo "SDB ="$SDB
-echo "SDC ="$SDC
-echo "SDA1 ="$SDA1
-echo "SDA2 ="$SDA2
-echo "SDA3 ="$SDA3
-echo "SDA4 ="$SDA4
-echo "SDA5 ="$SDA5
-echo "SDA6 ="$SDA6
-echo "SDA7 ="$SDA7
-echo "SDB1 ="$SDB1
-echo "SDC1 ="$SDC1
-}
-
-check_usb_device()
-{
-    echo "check_usb_device to exclude usb device when partclone"
-    ls -l /sys/block/sdd > /tmp/sdd_is_usb.info
-    ls -l /sys/block/sdc > /tmp/sdc_is_usb.info
-    ls -l /sys/block/sdb > /tmp/sdb_is_usb.info
-    ls -l /sys/block/sda > /tmp/sda_is_usb.info
-    if [[ ! -z $(cat /tmp/sdd_is_usb.info | grep usb) ]]
-    then
-        type=sda_sdb_sdc
-		usb_type=sdd
-    elif [[ ! -z $(cat /tmp/sdc_is_usb.info | grep usb) ]]
-    then
-        type=sda_sdb_sdd
-		usb_type=sdc
-    elif [[ ! -z $(cat /tmp/sdb_is_usb.info | grep usb) ]]
-    then
-        type=sda_sdc_sdd
-		usb_type=sdb
-    elif [[ ! -z $(cat /tmp/sda_is_usb.info | grep usb) ]]
-    then
-        type=sdb_sdc_sdd
-		usb_type=sda
-    fi
-}
-
-check_usb_device
-echo "Hard Disk Type ="$type
-echo "USB Device Type ="$usb_type
+#Print defaults
+echo "sata_standard_disk_size ="$sata_standard_disk_size
+echo "ssd_standard_disk_size ="$ssd_standard_disk_size
 echo "restore_image_directory ="$restore_image_directory
+echo "centos_root_partition_restore_image_directory ="$centos_root_partition_restore_image_directory
+
+confirm_sda()
+{
+echo "confirm_sda"
+# Confirm sda  1T SATA
+for disk_name in `cat /tmp/disk.info`
+do
+	echo "disk_name == "$disk_name
+	disk_size=`fdisk -l /dev/$disk_name | grep -m1 ^Disk | awk '{print $3}'`
+	disk_unit=`fdisk -lu /dev/$disk_name | grep -m1 ^Disk | awk '{print $4}' | tr -d ","`
+	disk_type=`cat /sys/block/$disk_name/queue/rotational`	
+	echo "disk_size == "$disk_size" "$disk_unit "disk_type =="$disk_type
+	if [ `echo "$disk_size < $sata_standard_disk_size" | bc ` -eq 1 ]
+	then 
+		echo "$disk_name disk_size $disk_size is smaller than $sata_standard_disk_size GiB sata_standard_disk_size"
+	else 
+		if [ $disk_unit = "GiB" ]
+		then
+			echo "$disk_name disk_size $disk_size is greater than $sata_standard_disk_size GiB sata_standard_disk_size"
+			if [ $disk_type = "1" ]
+			then
+				echo "$disk_name is sata disk type"
+				SDA=$disk_name
+				SDA1=$disk_name"1"
+                SDA2=$disk_name"2"
+				SDA3=$disk_name"3"
+				SDA4=$disk_name"4"
+				SDA5=$disk_name"5"
+				SDA6=$disk_name"6"
+				SDA7=$disk_name"7"
+			else
+				echo "disk_name is ssd disk type"
+			fi
+		else
+			echo "$disk_name disk_size $disk_size is smaller than $sata_standard_disk_size GiB sata_standard_disk_size"
+		fi
+	fi
+done
+echo "SDA ="$SDA
+echo "SDA1 ="$SDA1
+echo "SDA2 ="$SDA2
+echo "SDA3 ="$SDA3
+echo "SDA4 ="$SDA4
+echo "SDA5 ="$SDA5
+echo "SDA6 ="$SDA6
+echo "SDA7 ="$SDA7
+}
 
 
+confirm_sdb()
+{
+echo "confirm_sdb"
+# Confirm sdb 1T SATA /opt/sata Partition
+for disk_name in `cat /tmp/disk.info`
+do
+        echo "disk_name == "$disk_name
+        disk_size=`fdisk -l /dev/$disk_name | grep -m1 ^Disk | awk '{print $3}'`
+        disk_unit=`fdisk -lu /dev/$disk_name | grep -m1 ^Disk | awk '{print $4}' | tr -d ","`
+        disk_type=`cat /sys/block/$disk_name/queue/rotational`
+        echo "disk_size == "$disk_size" "$disk_unit "disk_type =="$disk_type
+        if [ `echo "$disk_size < $sata_standard_disk_size" | bc ` -eq 1 ]
+        then
+                echo "$disk_name disk_size $disk_size is smaller than $sata_standard_disk_size GiB sata_standard_disk_size"
+        else
+                if [ $disk_unit = "GiB" ]
+                then
+                        echo "$disk_name disk_size $disk_size is greater than $sata_standard_disk_size GiB sata_standard_disk_size"
+                        if [ $disk_type = "1" -a $disk_name != $SDA ]
+                        then
+                                echo "$disk_name is sata disk type"
+                                SDB=$disk_name
+                                SDB1=$disk_name"1"
+                        
+                        else
+                                echo "disk_name is ssd disk type"
+                        fi
+                else
+                        echo "$disk_name disk_size $disk_size is smaller than $sata_standard_disk_size GiB sata_standard_disk_size"
+                fi
+        fi
+done
+echo "SDB ="$SDB
+echo "SDB1 ="$SDB1
+}
+
+
+confirm_sdc()
+{
+echo "confirm_sdc"
+# Confirm sdc or nvme0n1 400G SSD /opt/ssd Partition
+for disk_name in `cat /tmp/disk.info`
+do
+        echo "disk_name == "$disk_name
+        disk_size=`fdisk -l /dev/$disk_name | grep -m1 ^Disk | awk '{print $3}'`
+        disk_unit=`fdisk -lu /dev/$disk_name | grep -m1 ^Disk | awk '{print $4}' | tr -d ","`
+        disk_type=`cat /sys/block/$disk_name/queue/rotational`
+        echo "disk_size == "$disk_size" "$disk_unit "disk_type =="$disk_type
+        if [ `echo "$disk_size < $ssd_standard_disk_size" | bc ` -eq 1 ]
+		then
+                echo "$disk_name disk_size $disk_size is smaller than $ssd_standard_disk_size GiB ssd_standard_disk_size"
+        else
+                if [ $disk_unit = "GiB"  -a $disk_type = "0" ]
+                then
+                        if [[ $disk_name =~  "sd" ]]
+						then	
+							echo "$disk_name disk_size $disk_size is greater than $ssd_standard_disk_size GiB ssd_standard_disk_size"
+							echo "$disk_name is ssd disk type with sdX type"
+							SDC=$disk_name
+							SDC1=$disk_name"1"
+
+						elif [[ $disk_name =~ "nvme" ]] 
+						then
+							echo "$disk_name disk_size $disk_size is greater than $ssd_standard_disk_size GiB ssd_standard_disk_size"
+							echo "$disk_name is ssd disk type with nvme0n1 type"
+							SDC=$disk_name
+							SDC1=$disk_name"p1"
+						else
+							echo "this  ssd disk is wrong"
+						fi
+                        
+                else
+                        echo "this is not ssd disk"
+                fi
+        fi
+done
+echo "SDC ="$SDC
+echo "SDC1 ="$SDC1
+}
 
 do_partclone_restore()
 {
@@ -733,23 +492,10 @@ main()
 	#while true; do
 			#read -p "请输入需要打包的类型[1~9]:" type
 			case $type in
-					sda_sdb_sdc*)
-							check_sda_sdb_sdc
-							do_partclone_restore
-							exit
-							;;
-					sda_sdb_sdd*)
-							check_sda_sdb_sdd
-							do_partclone_restore
-							exit
-							;;
-					sda_sdc_sdd*)
-							check_sda_sdc_sdd
-							do_partclone_restore
-							exit
-							;;
-					sdb_sdc_sdd*)
-							check_sdb_sdc_sdd
+					success*)
+							confirm_sda
+							confirm_sdb
+							confirm_sdc
 							do_partclone_restore
 							exit
 							;;
